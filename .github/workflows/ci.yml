@@ -1,0 +1,54 @@
+name: CI Build and Unit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-unit-tests:
+    name: Build and Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/database.sqlite
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      MAIL_MAILER: array
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+          extensions: mbstring, pdo, pdo_sqlite, dom, fileinfo
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Prepare application environment
+        run: |
+          php -r "file_exists('.env') || copy('.env.example', '.env');"
+          touch database/database.sqlite
+          php artisan key:generate --ansi
+
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Run unit tests
+        run: php artisan test --testsuite=Unit --no-interaction
