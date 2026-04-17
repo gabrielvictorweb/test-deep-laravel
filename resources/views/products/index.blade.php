@@ -4,26 +4,27 @@
 
 @section('content')
     <div class="space-y-6">
-        <section class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_50px_-20px_rgba(15,23,42,0.12)] backdrop-blur sm:p-8">
-            <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-gradient-to-br from-emerald-100/60 to-sky-100/60 blur-3xl"></div>
+        <section class="relative overflow-hidden rounded-4xl border border-[#e6e1d5] bg-[#fffefb]/95 p-6 shadow-[0_1px_2px_rgba(15,23,42,0.05),0_28px_72px_-44px_rgba(15,23,42,0.7)] backdrop-blur sm:p-8 page-enter stagger-1">
+            <div class="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-cyan-200/25 blur-3xl"></div>
+            <div class="pointer-events-none absolute -left-24 bottom-0 h-56 w-56 rounded-full bg-orange-200/20 blur-3xl"></div>
 
             <div class="relative">
                 <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
                     <div>
-                        <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700 shadow-sm">
+                        <span class="inline-flex items-center gap-2 rounded-full border border-teal-200/70 bg-teal-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-700 shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3"><path stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a1 1 0 0 0-.53-.88l-7.5-4a1 1 0 0 0-.94 0l-7.5 4A1 1 0 0 0 4 8v8a1 1 0 0 0 .53.88l7.5 4a1 1 0 0 0 .94 0l7.5-4A1 1 0 0 0 21 16Z" /></svg>
                             Inventário
                         </span>
-                        <h1 class="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Meus produtos</h1>
+                        <h1 class="heading-font mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Meus produtos</h1>
                         <p class="mt-2 text-sm text-slate-600">Cadastre, atualize e remova itens com upload de imagem.</p>
                     </div>
-                    <div class="rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-white px-4 py-3 text-center">
+                    <div class="rounded-2xl border border-[#e6dfd0] bg-[#fdfaf3] px-4 py-3 text-center">
                         <p class="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Total</p>
                         <p class="mt-1 text-2xl font-bold text-slate-900">{{ $products->total() ?? $products->count() }}</p>
                     </div>
                 </div>
 
-                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-5 md:grid-cols-2">
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 rounded-3xl border border-dashed border-[#d8d1c2] bg-[#f9f6ef] p-5 md:grid-cols-2">
                     @csrf
 
                     <div>
@@ -53,8 +54,8 @@
                     <div class="md:col-span-2">
                         <label for="image" class="mb-2 block text-sm font-semibold text-slate-700">Imagem</label>
                         <input id="image" name="image" type="file" accept="image/*" class="hidden" />
-                        <label for="image" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-white px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:bg-sky-50/50 hover:text-sky-700">
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-sky-100 group-hover:text-sky-600">
+                        <label for="image" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d6cebd] bg-white px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-teal-400 hover:bg-teal-50/40 hover:text-teal-700">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-teal-100 group-hover:text-teal-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M12 3v13M7 8l5-5 5 5" />
                                 </svg>
@@ -77,11 +78,11 @@
             </div>
         </section>
 
-        <section class="space-y-3">
+        <section class="space-y-3 page-enter stagger-2">
             @forelse ($products as $product)
                 <x-ui.card class="p-4 sm:p-5">
                     <div class="grid gap-5 md:grid-cols-[140px_1fr]">
-                        <div class="aspect-square overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-slate-100">
+                        <div class="aspect-square overflow-hidden rounded-2xl border border-[#e6e1d5] bg-linear-to-br from-[#faf7f0] to-[#f2ede2]">
                             @if ($product->image_url)
                                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover" />
                             @else
@@ -102,12 +103,12 @@
                                     <h3 class="text-lg font-bold tracking-tight text-slate-900">{{ $product->name }}</h3>
                                     <p class="mt-1 text-sm leading-relaxed text-slate-600">{{ $product->description }}</p>
                                 </div>
-                                <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-gradient-to-r from-sky-100 to-indigo-100 px-3 py-1.5 text-sm font-bold text-sky-800 ring-1 ring-sky-200/70">
+                                <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-linear-to-r from-teal-50 to-cyan-50 px-3 py-1.5 text-sm font-bold text-teal-800 ring-1 ring-teal-200/70">
                                     R$ {{ number_format((float) $product->price, 2, ',', '.') }}
                                 </span>
                             </div>
 
-                            <details class="group mt-4 rounded-2xl border border-slate-200/70 bg-slate-50/50 transition open:bg-white open:shadow-sm">
+                            <details class="group mt-4 rounded-2xl border border-[#e6dfd0] bg-[#faf7f0]/70 transition open:bg-white open:shadow-sm">
                                 <summary class="flex cursor-pointer items-center justify-between gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition hover:text-slate-900">
                                     <span class="inline-flex items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4">
@@ -119,7 +120,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4 transition group-open:rotate-180"><path stroke-linecap="round" stroke-linejoin="round" d="m19 9-7 7-7-7" /></svg>
                                 </summary>
 
-                                <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data" class="grid gap-3 border-t border-slate-200/70 p-4 md:grid-cols-2">
+                                <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data" class="grid gap-3 border-t border-[#e6dfd0] p-4 md:grid-cols-2">
                                     @csrf
                                     @method('PUT')
 
@@ -141,7 +142,7 @@
                                     <div class="md:col-span-2">
                                         <label class="mb-2 block text-sm font-medium text-slate-700">Nova imagem (opcional)</label>
                                         <input name="image" type="file" accept="image/*" class="hidden" id="image-{{ $product->id }}" />
-                                        <label for="image-{{ $product->id }}" class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white px-4 py-4 text-xs font-semibold text-slate-600 transition hover:border-sky-400 hover:bg-sky-50/50 hover:text-sky-700">
+                                        <label for="image-{{ $product->id }}" class="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#d6cebd] bg-white px-4 py-4 text-xs font-semibold text-slate-600 transition hover:border-teal-400 hover:bg-teal-50/50 hover:text-teal-700">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M12 3v13M7 8l5-5 5 5" /></svg>
                                             Selecionar nova imagem
                                         </label>
@@ -169,7 +170,7 @@
                 </x-ui.card>
             @empty
                 <x-ui.card class="p-12 text-center">
-                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200/60 text-slate-500 ring-1 ring-slate-200/70">
+                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#f4eee2] to-[#ebe2d1] text-slate-500 ring-1 ring-[#dcd3bf]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-7 w-7">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a1 1 0 0 0-.53-.88l-7.5-4a1 1 0 0 0-.94 0l-7.5 4A1 1 0 0 0 4 8v8a1 1 0 0 0 .53.88l7.5 4a1 1 0 0 0 .94 0l7.5-4A1 1 0 0 0 21 16Z" />
                         </svg>
@@ -181,7 +182,7 @@
         </section>
 
         @if ($products->hasPages())
-            <div class="pt-2">
+            <div class="pt-2 page-enter stagger-3">
                 {{ $products->links() }}
             </div>
         @endif

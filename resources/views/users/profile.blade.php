@@ -19,16 +19,16 @@
     @endphp
 
     <div class="space-y-6">
-        <section class="relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white/90 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_50px_-20px_rgba(15,23,42,0.12)] backdrop-blur">
-            <div class="relative h-36 overflow-hidden bg-gradient-to-br from-sky-400 via-indigo-500 to-violet-500">
-                <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_top_left,_rgba(255,255,255,0.4),_transparent_50%)]"></div>
+        <section class="relative overflow-hidden rounded-4xl border border-[#e6e1d5] bg-[#fffefb]/95 shadow-[0_1px_2px_rgba(15,23,42,0.05),0_28px_72px_-44px_rgba(15,23,42,0.7)] backdrop-blur page-enter stagger-2">
+            <div class="relative h-36 overflow-hidden bg-linear-to-br from-teal-500 via-cyan-500 to-orange-400">
+                <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_top_left,rgba(255,255,255,0.4),transparent_50%)]"></div>
                 <div class="pointer-events-none absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-white/20 blur-2xl"></div>
             </div>
 
             <div class="relative -mt-16 px-6 pb-8 sm:px-10">
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div class="flex items-end gap-4">
-                        <div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-gradient-to-br from-sky-200 to-indigo-200 shadow-lg" id="avatar-preview-container">
+                        <div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-linear-to-br from-sky-200 to-indigo-200 shadow-lg" id="avatar-preview-container">
                             @if (is_string($currentAvatar) && $currentAvatar !== '')
                                 <img id="avatar-preview" src="{{ $currentAvatar }}" alt="Foto de perfil" class="h-full w-full object-cover" />
                             @else
@@ -39,19 +39,14 @@
                         </div>
                         <div class="pb-1">
                             <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Perfil</p>
-                            <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $prefilledName }}</h2>
+                            <h2 class="heading-font mt-1 text-3xl font-extrabold tracking-tight text-slate-900">{{ $prefilledName }}</h2>
                             <p class="text-sm text-slate-500">{{ $prefilledEmail }}</p>
                         </div>
                     </div>
-
-                    <div class="inline-flex items-center gap-2 self-start rounded-full border border-emerald-200/70 bg-emerald-50/80 px-3 py-1.5 text-xs font-semibold text-emerald-700">
-                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                        Sincronizado com Auth0
-                    </div>
                 </div>
 
-                <div class="mt-8 border-t border-slate-200/70 pt-8">
-                    <h3 class="text-base font-bold tracking-tight text-slate-900">Editar dados pessoais</h3>
+                <div class="mt-8 border-t border-[#ebe5d9] pt-8">
+                    <h3 class="heading-font text-xl font-bold tracking-tight text-slate-900">Editar dados pessoais</h3>
                     <p class="mt-1 text-sm text-slate-500">Os campos já vêm pré-preenchidos. Alterações também são sincronizadas com o Auth0.</p>
 
                     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="mt-6 grid gap-4 md:grid-cols-2">
@@ -81,7 +76,7 @@
                         <div class="md:col-span-2">
                             <label for="avatar" class="mb-2 block text-sm font-semibold text-slate-700">Foto de perfil</label>
                             <input id="avatar" name="avatar" type="file" accept="image/*" class="hidden" />
-                            <label for="avatar" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50/70 px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-sky-400 hover:bg-sky-50/50 hover:text-sky-700">
+                            <label for="avatar" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d6cebd] bg-[#faf7f0] px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-teal-400 hover:bg-teal-50/50 hover:text-teal-700">
                                 <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition group-hover:text-sky-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M12 3v13M7 8l5-5 5 5" />

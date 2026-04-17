@@ -4,22 +4,22 @@
 
 @section('content')
     <div class="mb-8 text-center">
-        <div class="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500 text-white shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_8px_22px_-6px_rgba(79,70,229,0.5)]">
+        <div class="mx-auto mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-cyan-500 via-sky-500 to-blue-600 text-white shadow-[0_14px_26px_-14px_rgba(2,132,199,0.85)]">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-6 w-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
                 <circle cx="9.5" cy="7" r="4" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 8v6M23 11h-6" />
             </svg>
         </div>
-        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">Novo usuário</p>
-        <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900">Criar conta</h1>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-700">Novo usuário</p>
+        <h1 class="heading-font mt-2 text-3xl font-extrabold tracking-tight text-slate-900">Criar conta</h1>
         <p class="mt-2 text-sm text-slate-600">
             Faça um cadastro público com foto de perfil e comece a gerenciar seus produtos.
         </p>
     </div>
 
     @if ($registeredUser)
-        <div class="overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-6">
+        <div class="overflow-hidden rounded-3xl border border-emerald-200/70 bg-linear-to-br from-emerald-50 to-emerald-100/50 p-6">
             <div class="flex items-start gap-4">
                 <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white shadow-md">
                     <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
@@ -30,7 +30,7 @@
                         <p><span class="font-semibold text-slate-700">Nome:</span> <span class="text-slate-900">{{ $registeredUser->name }}</span></p>
                         <p class="mt-1"><span class="font-semibold text-slate-700">Email:</span> <span class="text-slate-900">{{ $registeredUser->email }}</span></p>
                     </div>
-                    <a href="{{ route('products.index') }}" class="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-sky-500 to-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_6px_16px_-6px_rgba(2,132,199,0.55)] transition hover:from-sky-500 hover:to-sky-700">
+                    <a href="{{ route('products.index') }}" class="mt-4 inline-flex items-center gap-2 rounded-2xl bg-linear-to-br from-cyan-500 via-sky-500 to-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-[0_14px_24px_-14px_rgba(2,132,199,0.8)] transition hover:-translate-y-0.5">
                         Ir para meus produtos
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6" /></svg>
                     </a>
@@ -142,8 +142,8 @@
                 </x-ui.button>
             </div>
 
-            <div class="rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50 to-white p-4 text-xs text-slate-600">
-                <p class="mb-2 flex items-center gap-1.5 font-semibold text-slate-800">
+            <div class="rounded-3xl border border-slate-200/70 bg-linear-to-br from-slate-50 to-white p-4 text-xs text-slate-600">
+                <p class="mb-2 flex items-center gap-1.5 font-semibold text-slate-800 heading-font">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4 text-sky-600">
                         <circle cx="12" cy="12" r="10" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4M12 8h.01" />
