@@ -11,7 +11,7 @@ class S3ProductImageStorageRepository implements ProductImageStorageInterface
 {
     public function upload(UploadedFile $image): string
     {
-        $path = Storage::disk('s3')->putFile('products', $image, ['visibility' => 'public']);
+        $path = Storage::disk('s3')->putFile('products', $image, ['visibility' => 'private']);
 
         if (! is_string($path) || $path === '') {
             throw new RuntimeException('Nao foi possivel enviar a imagem para o S3.');
