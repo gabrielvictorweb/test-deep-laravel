@@ -31,6 +31,8 @@ class DeleteProductController extends Controller
 
         abort_if($product->user_id !== $registeredUser->id, 403);
 
+        $product->loadMissing('images');
+
         $useCase->execute($product, $productRepository, $imageStorage);
 
         return redirect()
