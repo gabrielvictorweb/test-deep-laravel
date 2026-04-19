@@ -2,6 +2,10 @@
 
 Aplicação Laravel 12 com autenticação Auth0, interface Blade + Tailwind/Flowbite e arquitetura em camadas (Domain, Application, Infra, Presentation). Em ambiente local, o armazenamento S3 é emulado com LocalStack via Laravel Sail.
 
+# Diagrama da Arquitetura
+
+<img width="1654" height="1169" alt="Diagrama sem nome" src="https://github.com/user-attachments/assets/f8cd6141-352c-4d40-b61f-b1909994e2af" />
+
 ## Visão Geral
 
 - Framework: Laravel 12
