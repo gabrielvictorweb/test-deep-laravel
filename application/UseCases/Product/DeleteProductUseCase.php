@@ -13,7 +13,14 @@ class DeleteProductUseCase
         ProductRepositoryInterface $productRepository,
         ProductImageStorageInterface $imageStorage,
     ): void {
-        $imageStorage->delete($product->image_path);
+        if ($product->relationLoaded('images')) {
+            foreach ($product->images as $image) {
+                $imageStorage->delete($image->path);
+            }
+        } else {
+            $imageStorage->delete($product->image_path);
+        }
+
         $productRepository->delete($product);
     }
 }
