@@ -1,129 +1,46 @@
-# test-deep-laravel
+# Test Deep Laravel
 
-Aplicação Laravel 12 com autenticação via Auth0, UI em Blade + Tailwind e uma arquitetura em camadas (Domain/Application/Infra/Presentation). O projeto usa S3 via Laravel Storage; em desenvolvimento local, o S3 é emulado com LocalStack.
+Aplicação Laravel 12 com autenticação Auth0, interface Blade + Tailwind/Flowbite e arquitetura em camadas (Domain, Application, Infra, Presentation). Em ambiente local, o armazenamento S3 é emulado com LocalStack via Laravel Sail.
 
-## Stack
+## Visão Geral
 
-- PHP 8.2+
-- Laravel 12
-- Auth0 (`auth0/login`)
-- Blade + Vite + Tailwind CSS
-- Storage S3 (`league/flysystem-aws-s3-v3`)
-- Docker (Laravel Sail) + MySQL + LocalStack (S3)
+- Framework: Laravel 12
+- Runtime: PHP 8.2+
+- Frontend: Blade, Vite, Tailwind CSS v4, Flowbite
+- Auth: Auth0 (`auth0/login`)
+- Storage: S3 (`league/flysystem-aws-s3-v3`)
+- Ambiente local: Docker + Sail + MySQL + LocalStack
 
-## Estrutura do projeto
+## Arquitetura
 
-Este repositório separa responsabilidades por camadas e usa PSR-4 para mapear namespaces em `composer.json`:
-
-```
-domain/        -> regras centrais: models e contracts (interfaces)
-application/   -> casos de uso (orquestração de negócio)
-infra/         -> implementações concretas (Eloquent, S3, integrações)
-presentation/  -> controllers HTTP (entrada/saída web)
-resources/     -> views Blade, CSS/JS
-routes/        -> rotas web
-docker/        -> scripts auxiliares (ex.: init do LocalStack)
+```text
+domain/        Modelos e contratos (interfaces)
+application/   Casos de uso (orquestração de regras)
+infra/         Implementações concretas (Eloquent, S3, integrações)
+presentation/  Controllers HTTP
+resources/     Views Blade e assets
+routes/        Rotas web
+docker/        Scripts de ambiente local
 ```
 
-### Domain
+### Decisões técnicas
 
-- `domain/Models`: entidades principais (ex.: `User`, `Product`).
-- `domain/Contracts`: contratos usados pela camada de aplicação para persistência/integrações.
+- Usuário local + Auth0: após autenticação, o sistema garante um usuário local para manter consistência dos dados internos.
+- S3 em dev com LocalStack: mesmo fluxo de upload usado em produção, com endpoint local no desenvolvimento.
+- Assets de avatar/produto servidos pelo backend: evita dependência direta de URL interna do bucket no navegador.
 
-Motivação: a camada de aplicação depende de contratos, não de implementações.
+## Pré-requisitos
 
-### Application
+- Docker e Docker Compose
+- PHP e Composer (opcional local; Sail já cobre no container)
+- Node.js (opcional local; normalmente via Sail)
+- Auth0 CLI (para gerar arquivos locais de configuração)
 
-- `application/UseCases/**`: casos de uso, com regras de fluxo e dependências injetadas via interfaces.
-
-Exemplo: `FindRegisteredUserUseCase` resolve/garante um usuário local a partir do usuário autenticado (Auth0).
-
-### Infra
-
-- `infra/Repositories/**`: implementações das interfaces do domínio.
-    - `Eloquent*Repository`: acesso a banco via Eloquent.
-    - `S3*StorageRepository`: upload/delete/url em S3 via `Storage::disk('s3')`.
-- `infra/Providers/AppServiceProvider.php`: faz o bind das interfaces do domínio para as implementações.
-
-O provider é registrado em `bootstrap/providers.php`.
-
-### Presentation
-
-- `presentation/Http/Controllers/**`: controllers finos, chamando use cases e retornando responses/views.
-- `routes/web.php`: organiza rotas públicas e rotas protegidas por `auth`.
-
-## Decisões técnicas (por quê)
-
-### 1) Auth0 + “usuário local”
-
-O login é feito via Auth0 (rotas/middleware do pacote são registradas automaticamente via `config/auth0.php`).
-
-Como o usuário autenticado pode existir no Auth0 mas ainda não existir na tabela `users`, foi adotado um padrão:
-
-- Use cases e controllers de rotas protegidas usam `FindRegisteredUserUseCase` com `createWhenMissing=true`.
-- Se não existir usuário local, ele é criado automaticamente (nome/email e `auth_identifier` quando disponível).
-
-Benefícios:
-
-- Evita redirecionar o usuário logado para um “cadastro público” só para criar registro local.
-- Permite tratar perfil/produtos de forma consistente, sempre com um `Domain\Models\User` persistido.
-
-### 2) Storage S3 via LocalStack em dev
-
-O upload de imagens (avatar e imagens de produto) é feito via `Storage::disk('s3')`.
-
-Em ambiente local, o S3 é emulado pelo LocalStack (serviço `localstack` em `compose.yaml`). No boot, o bucket é criado pelo script `docker/localstack/init.sh`:
-
-- Bucket padrão: `test-deep`
-
-Motivação:
-
-- Mesmo código para dev e prod (troca apenas por variáveis de ambiente/endpoints).
-
-Observação importante (Docker):
-
-- O container do app e o LocalStack precisam estar na mesma rede Docker para o hostname `localstack` resolver. O `compose.yaml` já garante isso.
-
-### 3) Servir avatar via Laravel (stream) ao invés de URL direta
-
-Para não depender do frontend acessando diretamente o endpoint/bucket, o avatar é servido por uma rota autenticada:
-
-- `GET /perfil/avatar` -> retorna `Storage::disk('s3')->response($path)`
-
-Com fallback:
-
-- Se não houver arquivo no S3, redireciona para uma URL externa (ex.: `picture` do Auth0), quando existir.
-
-Benefícios:
-
-- Controle de acesso no backend.
-- Facilidade para trocar o provedor de storage sem mudar as views.
-
-### 4) UI em tema claro
-
-As views Blade e componentes UI foram ajustados para um tema claro consistente (sem dark mode), com sidebar e layout do dashboard padronizados.
-
-## Como rodar localmente (Sail)
-
-Pré-requisitos:
-
-- Docker + Docker Compose
-
-Subir containers:
+## Setup rápido
 
 ```bash
+cp .env.example .env
 ./vendor/bin/sail up -d
-```
-
-Instalar dependências e preparar o app (opção 1):
-
-```bash
-./vendor/bin/sail composer setup
-```
-
-Ou passo a passo (opção 2):
-
-```bash
 ./vendor/bin/sail composer install
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate
@@ -131,48 +48,173 @@ Ou passo a passo (opção 2):
 ./vendor/bin/sail npm run dev
 ```
 
-## Variáveis de ambiente (resumo)
+## Onboarding de novo desenvolvedor
 
-Use `.env.example` como base e ajuste `.env`.
+Alguns arquivos não são versionados por segurança e devem ser criados localmente:
 
-Banco de dados:
+- `.env`
+- `.auth0.app.json`
+- `.auth0.api.json` (opcional)
 
-- O `compose.yaml` sobe MySQL. Para usar via Sail, configure `DB_CONNECTION=mysql` e os valores de `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` conforme seu `.env`.
-- Se preferir SQLite (padrão do `.env.example`), garanta que o arquivo do SQLite existe e ajuste a app para rodar sem o MySQL.
+### 1) Configurar `.env`
 
-S3/LocalStack (exemplo típico para dev):
+A partir de `.env.example`, ajuste no mínimo:
+
+- `APP_URL=http://localhost`
+- conexão MySQL do Sail
+- configurações S3/LocalStack
+
+Observação:
+
+- O projeto foi configurado para expor o app em `localhost` (bind `127.0.0.1`) para evitar problemas de sessão/state no Auth0.
+
+### 2) Gerar arquivo local do Auth0
+
+Autentique no Auth0 CLI:
+
+```bash
+auth0 login
+```
+
+Gere o app web local:
+
+```bash
+auth0 apps create \
+    --name "Test Deep Laravel (Local)" \
+    --type "regular" \
+    --auth-method "post" \
+    --callbacks "http://localhost/callback" \
+    --logout-urls "http://localhost" \
+    --reveal-secrets \
+    --no-input \
+    --json > .auth0.app.json
+```
+
+Opcional (API local):
+
+```bash
+auth0 apis create \
+    --name "Test Deep Laravel API" \
+    --identifier "https://test-deep-laravel.local/api" \
+    --offline-access \
+    --no-input \
+    --json > .auth0.api.json
+```
+
+Se usar porta diferente da 80, ajuste callback/logout URLs de acordo.
+
+### 3) Checklist de validação local
+
+- Abrir `http://localhost`
+- Clicar em `Entrar` e concluir callback sem erro
+- Acessar `/dashboard`
+- Cadastrar produto com imagem e verificar listagem
+
+## Variáveis e configuração local
+
+### Banco
+
+- `DB_CONNECTION=mysql`
+- `DB_HOST=mysql`
+- `DB_PORT=3306`
+- credenciais conforme `.env`
+
+### S3 (LocalStack)
 
 - `AWS_DEFAULT_REGION=us-east-1`
 - `AWS_BUCKET=test-deep`
 - `AWS_ENDPOINT=http://localstack:4566`
 - `AWS_USE_PATH_STYLE_ENDPOINT=true`
 
-Auth0:
+### Auth0
 
-- As variáveis dependem do pacote `auth0/login`. Consulte `config/auth0.php` e a documentação do Auth0 Laravel para configurar domínio, client id/secret, audience e redirect URLs.
+- Fluxo recomendado: `.auth0.app.json` / `.auth0.api.json` (não commitar)
+- O pacote `auth0/login` detecta automaticamente esses arquivos locais
+
+## Execução
+
+Subir ambiente:
+
+```bash
+./vendor/bin/sail up -d
+```
+
+Frontend (dev):
+
+```bash
+./vendor/bin/sail npm run dev
+```
+
+Build de produção local:
+
+```bash
+./vendor/bin/sail npm run build
+```
+
+Testes:
+
+```bash
+./vendor/bin/sail composer test
+```
+
+## Seeders opcionais
+
+O seeder de produtos usa Faker PHP e nao e executado automaticamente no fluxo padrao. Rode somente quando quiser popular o ambiente de desenvolvimento com dados de exemplo.
+
+O `ProductSeeder` tambem gera imagens ficticias (SVG) e envia para o S3/LocalStack, preenchendo a capa do produto e a galeria (`product_images`).
+
+Com Sail:
+
+```bash
+./vendor/bin/sail artisan db:seed --class=Database\\Seeders\\ProductSeeder
+```
+
+Sem Sail:
+
+```bash
+php artisan db:seed --class=Database\\Seeders\\ProductSeeder
+```
+
+Observacao:
+
+- Se o S3/LocalStack estiver indisponivel, o seeder ainda cria os produtos, mas sem imagens.
 
 ## Rotas principais
 
-Público:
+Públicas:
 
-- `GET /` (welcome)
+- `GET /`
 - `GET/POST /usuarios/cadastro`
 
-Autenticado:
+Autenticadas:
 
 - `GET /dashboard`
 - `GET /perfil`
 - `PUT /perfil`
 - `GET /perfil/avatar`
-- CRUD de produtos em `/produtos`
+- `GET /produtos`
+- `POST /produtos`
+- `PUT /produtos/{product}`
+- `DELETE /produtos/{product}`
 
-## Notas de segurança
+## Segurança
 
-- Nunca commite `.env`.
-- Arquivos `.auth0.*.json` são ignorados por padrão (ver `.gitignore`) e podem conter segredos; trate-os como credenciais.
+- Nunca commitar `.env`
+- Nunca commitar `.auth0.*.json`
+- Nunca commitar binários locais (ex.: `auth0`)
+- Tratar `client_secret` e chaves como credenciais sensíveis
 
-## Testes
+## Troubleshooting
 
-```bash
-./vendor/bin/sail composer test
-```
+### Invalid state no login
+
+- Use sempre `localhost` (não misture com `127.0.0.1` ou `0.0.0.0`)
+- Verifique no Auth0: Allowed Callback URLs `http://localhost/callback`.
+- Verifique no Auth0: Allowed Logout URLs `http://localhost`.
+- Verifique no Auth0: Allowed Web Origins `http://localhost`.
+
+### Imagem não aparece na listagem
+
+- Verifique se LocalStack está ativo
+- Confira bucket e endpoint no `.env`
+- Revalide permissões e rota de stream da imagem no backend
