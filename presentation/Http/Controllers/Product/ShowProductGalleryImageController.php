@@ -37,14 +37,8 @@ class ShowProductGalleryImageController extends Controller
             try {
                 return Storage::disk('s3')->response($path);
             } catch (Throwable) {
-                // fallback handled below
+                abort(404);
             }
-        }
-
-        $fallbackUrl = (string) ($image->url ?? '');
-
-        if ($fallbackUrl !== '' && filter_var($fallbackUrl, FILTER_VALIDATE_URL)) {
-            return redirect()->away($fallbackUrl);
         }
 
         abort(404);
