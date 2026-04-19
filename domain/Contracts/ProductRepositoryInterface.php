@@ -8,7 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ProductRepositoryInterface
 {
-    public function paginateByUserId(int $userId, int $perPage = 12): LengthAwarePaginator;
+    public function paginateByUserId(int $userId, int $perPage = 12, ?string $name = null): LengthAwarePaginator;
 
     public function recentByUserId(int $userId, int $limit = 5): Collection;
 
