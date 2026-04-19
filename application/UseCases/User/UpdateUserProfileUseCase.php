@@ -7,6 +7,8 @@ use Domain\Contracts\UserAvatarStorageInterface;
 use Domain\Contracts\UserRepositoryInterface;
 use Domain\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UpdateUserProfileUseCase
 {
@@ -42,11 +44,19 @@ class UpdateUserProfileUseCase
             $auth0Payload['picture'] = $avatarUrl;
         }
 
-        if (is_string($user->auth_identifier) && $user->auth_identifier !== '') {
-            $auth0UserProfileSync->sync($user->auth_identifier, $auth0Payload);
-        }
-
         $updatedUser = $userRepository->update($user, $localPayload);
+
+        if (is_string($user->auth_identifier) && $user->auth_identifier !== '') {
+            try {
+                $auth0UserProfileSync->sync($user->auth_identifier, $auth0Payload);
+            } catch (Throwable $exception) {
+                Log::warning('Auth0 profile sync failed during profile update.', [
+                    'user_id' => $user->id,
+                    'auth_identifier' => $user->auth_identifier,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+        }
 
         if ($avatar !== null) {
             $avatarStorage->delete($oldAvatarPath);
