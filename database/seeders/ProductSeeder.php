@@ -90,7 +90,7 @@ class ProductSeeder extends Seeder
 
         try {
             Storage::disk('s3')->put($path, $svg, [
-                'visibility' => 'public',
+                'visibility' => 'private',
                 'ContentType' => 'image/svg+xml',
             ]);
 
