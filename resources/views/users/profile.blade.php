@@ -19,8 +19,8 @@
     @endphp
 
     <div class="space-y-6">
-        <section class="relative overflow-hidden rounded-4xl border border-[#e6e1d5] bg-[#fffefb]/95 shadow-[0_1px_2px_rgba(15,23,42,0.05),0_28px_72px_-44px_rgba(15,23,42,0.7)] backdrop-blur page-enter stagger-2">
-            <div class="relative h-36 overflow-hidden bg-linear-to-br from-teal-500 via-cyan-500 to-orange-400">
+        <section class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="relative h-36 overflow-hidden bg-linear-to-br from-cyan-500 via-cyan-600 to-blue-700">
                 <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(at_top_left,rgba(255,255,255,0.4),transparent_50%)]"></div>
                 <div class="pointer-events-none absolute -right-10 -bottom-10 h-40 w-40 rounded-full bg-white/20 blur-2xl"></div>
             </div>
@@ -28,7 +28,7 @@
             <div class="relative -mt-16 px-6 pb-8 sm:px-10">
                 <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                     <div class="flex items-end gap-4">
-                        <div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-linear-to-br from-sky-200 to-indigo-200 shadow-lg" id="avatar-preview-container">
+                        <div class="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-4 border-white bg-linear-to-br from-sky-200 to-indigo-200 shadow-md" id="avatar-preview-container">
                             @if (is_string($currentAvatar) && $currentAvatar !== '')
                                 <img id="avatar-preview" src="{{ $currentAvatar }}" alt="Foto de perfil" class="h-full w-full object-cover" />
                             @else
@@ -39,17 +39,17 @@
                         </div>
                         <div class="pb-1">
                             <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Perfil</p>
-                            <h2 class="heading-font mt-1 text-3xl font-extrabold tracking-tight text-slate-900">{{ $prefilledName }}</h2>
+                            <h2 class="mt-1 text-3xl font-extrabold tracking-tight text-slate-900">{{ $prefilledName }}</h2>
                             <p class="text-sm text-slate-500">{{ $prefilledEmail }}</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-8 border-t border-[#ebe5d9] pt-8">
-                    <h3 class="heading-font text-xl font-bold tracking-tight text-slate-900">Editar dados pessoais</h3>
+                <div class="mt-8 border-t border-slate-200 pt-8">
+                    <h3 class="text-xl font-bold tracking-tight text-slate-900">Editar dados pessoais</h3>
                     <p class="mt-1 text-sm text-slate-500">Os campos já vêm pré-preenchidos. Alterações também são sincronizadas com o Auth0.</p>
 
-                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="mt-6 grid gap-4 md:grid-cols-2">
+                    <form id="profile-form" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="mt-6 grid gap-4 md:grid-cols-2">
                         @csrf
                         @method('PUT')
 
@@ -76,7 +76,7 @@
                         <div class="md:col-span-2">
                             <label for="avatar" class="mb-2 block text-sm font-semibold text-slate-700">Foto de perfil</label>
                             <input id="avatar" name="avatar" type="file" accept="image/*" class="hidden" />
-                            <label for="avatar" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#d6cebd] bg-[#faf7f0] px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-teal-400 hover:bg-teal-50/50 hover:text-teal-700">
+                            <label for="avatar" class="group flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-sm font-semibold text-slate-600 transition hover:border-cyan-400 hover:bg-cyan-50/50 hover:text-cyan-700">
                                 <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition group-hover:text-sky-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-5 w-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M12 3v13M7 8l5-5 5 5" />
@@ -88,10 +88,12 @@
                         </div>
 
                         <div class="md:col-span-2 flex justify-end pt-2">
-                            <x-ui.button type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
-                                Salvar alterações
-                            </x-ui.button>
+                            <button id="profile-save-button" type="submit" disabled class="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-300 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 disabled:hover:bg-slate-300 disabled:focus:ring-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Salvar alteracoes
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -100,18 +102,72 @@
     </div>
 
     <script>
+        const profileForm = document.getElementById('profile-form');
+        const saveButton = document.getElementById('profile-save-button');
         const avatarInput = document.getElementById('avatar');
         const previewContainer = document.getElementById('avatar-preview-container');
+
+        const formControls = profileForm
+            ? Array.from(profileForm.querySelectorAll('input, textarea, select')).filter((field) => {
+                if (field.type === 'hidden') {
+                    return false;
+                }
+
+                if (field.name === '_token' || field.name === '_method') {
+                    return false;
+                }
+
+                return true;
+            })
+            : [];
+
+        const initialState = new Map();
+
+        formControls.forEach((field) => {
+            if (field.type === 'file') {
+                initialState.set(field.name || field.id, '');
+                return;
+            }
+
+            initialState.set(field.name || field.id, field.value ?? '');
+        });
+
+        const updateSaveState = () => {
+            if (!saveButton) {
+                return;
+            }
+
+            const hasChanges = formControls.some((field) => {
+                const key = field.name || field.id;
+
+                if (field.type === 'file') {
+                    return (field.files?.length ?? 0) > 0;
+                }
+
+                return (field.value ?? '') !== (initialState.get(key) ?? '');
+            });
+
+            saveButton.disabled = !hasChanges;
+        };
+
+        formControls.forEach((field) => {
+            const eventType = field.type === 'file' ? 'change' : 'input';
+            field.addEventListener(eventType, updateSaveState);
+        });
 
         avatarInput?.addEventListener('change', (event) => {
             const [file] = event.target.files ?? [];
 
             if (!file) {
+                updateSaveState();
                 return;
             }
 
             const url = URL.createObjectURL(file);
             previewContainer.innerHTML = `<img src="${url}" alt="Pré-visualização" class="h-full w-full object-cover" />`;
+            updateSaveState();
         });
+
+        updateSaveState();
     </script>
 @endsection
