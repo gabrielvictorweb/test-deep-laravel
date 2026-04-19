@@ -29,11 +29,13 @@ class ListProductsController extends Controller
         }
 
         $perPage = max(1, min(30, (int) $request->integer('per_page', 12)));
-        $products = $useCase->execute($productRepository, $registeredUser->id, $perPage)->withQueryString();
+        $searchName = trim((string) $request->string('q', ''));
+        $products = $useCase->execute($productRepository, $registeredUser->id, $perPage, $searchName)->withQueryString();
 
         return view('products.index', [
             'products' => $products,
             'registeredUser' => $registeredUser,
+            'searchName' => $searchName,
         ]);
     }
 }
