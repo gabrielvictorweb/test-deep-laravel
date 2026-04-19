@@ -55,9 +55,9 @@ class ProductUseCasesTest extends TestCase
         $repository = Mockery::mock(ProductRepositoryInterface::class);
         $paginator = Mockery::mock(LengthAwarePaginator::class);
 
-        $repository->shouldReceive('paginateByUserId')->once()->with(77, 15)->andReturn($paginator);
+        $repository->shouldReceive('paginateByUserId')->once()->with(77, 15, 'cafeteira')->andReturn($paginator);
 
-        $result = (new ListProductsUseCase())->execute($repository, 77, 15);
+        $result = (new ListProductsUseCase())->execute($repository, 77, 15, 'cafeteira');
 
         $this->assertSame($paginator, $result);
     }
