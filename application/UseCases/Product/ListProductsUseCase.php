@@ -11,7 +11,8 @@ class ListProductsUseCase
         ProductRepositoryInterface $productRepository,
         int $userId,
         int $perPage = 12,
+        ?string $name = null,
     ): LengthAwarePaginator {
-        return $productRepository->paginateByUserId($userId, $perPage);
+        return $productRepository->paginateByUserId($userId, $perPage, $name);
     }
 }
