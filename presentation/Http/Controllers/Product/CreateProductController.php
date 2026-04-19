@@ -9,6 +9,7 @@ use Domain\Contracts\ProductRepositoryInterface;
 use Domain\Contracts\UserRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Presentation\Http\Controllers\Controller;
 
 class CreateProductController extends Controller
@@ -33,8 +34,14 @@ class CreateProductController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'max:5120'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'max:5120'],
         ]);
+
+        $images = array_values(array_filter(
+            (array) $request->file('images', []),
+            static fn ($file): bool => $file instanceof UploadedFile,
+        ));
 
         $useCase->execute(
             [
@@ -43,7 +50,7 @@ class CreateProductController extends Controller
                 'description' => $payload['description'] ?? null,
                 'price' => $payload['price'],
             ],
-            $request->file('image'),
+            $images,
             $productRepository,
             $imageStorage,
         );
