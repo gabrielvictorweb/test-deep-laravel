@@ -11,7 +11,7 @@ class S3UserAvatarStorageRepository implements UserAvatarStorageInterface
 {
     public function upload(UploadedFile $image): string
     {
-        $path = Storage::disk('s3')->putFile('avatars', $image, ['visibility' => 'public']);
+        $path = Storage::disk('s3')->putFile('avatars', $image, ['visibility' => 'private']);
 
         if (! is_string($path) || $path === '') {
             throw new RuntimeException('Nao foi possivel enviar a foto de perfil para o S3.');
