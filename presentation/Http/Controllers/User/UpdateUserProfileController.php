@@ -48,6 +48,6 @@ class UpdateUserProfileController extends Controller
 
         return redirect()
             ->route('profile.edit')
-            ->with('success', 'Perfil atualizado com sucesso e sincronizado com o Auth0.');
+            ->with('success', 'Perfil atualizado com sucesso.');
     }
 }
