@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Presentation\Http\Controllers\Dashboard\ShowDashboardController;
 use Presentation\Http\Controllers\Product\CreateProductController;
 use Presentation\Http\Controllers\Product\DeleteProductController;
+use Presentation\Http\Controllers\Product\ShowCreateProductController;
+use Presentation\Http\Controllers\Product\ShowEditProductController;
+use Presentation\Http\Controllers\Product\ShowProductGalleryImageController;
 use Presentation\Http\Controllers\Product\ListProductsController;
+use Presentation\Http\Controllers\Product\ShowProductImageController;
 use Presentation\Http\Controllers\Product\UpdateProductController;
 use Presentation\Http\Controllers\User\ShowUserAvatarController;
 use Presentation\Http\Controllers\User\ShowUserProfileController;
@@ -26,6 +30,10 @@ Route::middleware('auth')->group(function (): void {
     Route::put('/perfil', [UpdateUserProfileController::class, 'execute'])->name('profile.update');
 
     Route::get('/produtos', [ListProductsController::class, 'execute'])->name('products.index');
+    Route::get('/produtos/novo', [ShowCreateProductController::class, 'execute'])->name('products.create');
+    Route::get('/produtos/{product}/editar', [ShowEditProductController::class, 'execute'])->name('products.edit');
+    Route::get('/produtos/{product}/imagem', [ShowProductImageController::class, 'execute'])->name('products.image');
+    Route::get('/produtos/{product}/imagens/{image}', [ShowProductGalleryImageController::class, 'execute'])->name('products.gallery-image');
     Route::post('/produtos', [CreateProductController::class, 'execute'])->name('products.store');
     Route::put('/produtos/{product}', [UpdateProductController::class, 'execute'])->name('products.update');
     Route::delete('/produtos/{product}', [DeleteProductController::class, 'execute'])->name('products.destroy');
