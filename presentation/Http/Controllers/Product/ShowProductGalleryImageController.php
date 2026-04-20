@@ -20,12 +20,12 @@ class ShowProductGalleryImageController extends Controller
         FindRegisteredUserUseCase $findRegisteredUserUseCase,
         UserRepositoryInterface $userRepository,
     ): StreamedResponse|RedirectResponse {
-        $registeredUser = $findRegisteredUserUseCase->execute(auth()->user(), $userRepository);
+        $registeredUser = $findRegisteredUserUseCase->execute(auth()->user(), $userRepository, true);
 
         if ($registeredUser === null) {
             return redirect()
-                ->route('users.create')
-                ->with('warning', 'Conclua seu cadastro de usuario para acessar imagens de produtos.');
+                ->route('dashboard')
+                ->with('warning', 'Nao foi possivel carregar seu perfil agora.');
         }
 
         abort_if($product->user_id !== $registeredUser->id, 403);

@@ -14,12 +14,12 @@ class ShowCreateProductController extends Controller
         FindRegisteredUserUseCase $findRegisteredUserUseCase,
         UserRepositoryInterface $userRepository,
     ): View|RedirectResponse {
-        $registeredUser = $findRegisteredUserUseCase->execute(auth()->user(), $userRepository);
+        $registeredUser = $findRegisteredUserUseCase->execute(auth()->user(), $userRepository, true);
 
         if ($registeredUser === null) {
             return redirect()
-                ->route('users.create')
-                ->with('warning', 'Conclua seu cadastro de usuario para cadastrar produtos.');
+                ->route('dashboard')
+                ->with('warning', 'Nao foi possivel carregar seu perfil agora.');
         }
 
         return view('products.create', [

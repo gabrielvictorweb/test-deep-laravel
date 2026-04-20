@@ -117,8 +117,9 @@
 
             const formatBrl = (rawDigits) => {
                 if (!rawDigits) return '';
-                const integerPart = rawDigits.slice(0, -2) || '0';
-                const cents = rawDigits.slice(-2).padStart(2, '0');
+                const normalizedDigits = rawDigits.replace(/^0+(?=\d)/, '');
+                const integerPart = normalizedDigits.slice(0, -2) || '0';
+                const cents = normalizedDigits.slice(-2).padStart(2, '0');
                 const grouped = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                 return `${grouped},${cents}`;
             };

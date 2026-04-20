@@ -3,15 +3,6 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    @php
-        $displayName = data_get(auth()->user(), 'name')
-            ?? data_get(auth()->user(), 'nickname')
-            ?? data_get(auth()->user(), 'email')
-            ?? 'Usuário autenticado';
-
-        $displayEmail = data_get(auth()->user(), 'email') ?? 'email@example.com';
-    @endphp
-
     <div class="space-y-6">
         <section class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm sm:p-10">
 

@@ -12,16 +12,11 @@ use Presentation\Http\Controllers\Product\ShowProductImageController;
 use Presentation\Http\Controllers\Product\UpdateProductController;
 use Presentation\Http\Controllers\User\ShowUserAvatarController;
 use Presentation\Http\Controllers\User\ShowUserProfileController;
-use Presentation\Http\Controllers\User\ShowUserRegistrationController;
-use Presentation\Http\Controllers\User\StoreUserRegistrationController;
 use Presentation\Http\Controllers\User\UpdateUserProfileController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/usuarios/cadastro', [ShowUserRegistrationController::class, 'execute'])->name('users.create');
-Route::post('/usuarios/cadastro', [StoreUserRegistrationController::class, 'execute'])->name('users.store');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/dashboard', [ShowDashboardController::class, 'execute'])->name('dashboard');

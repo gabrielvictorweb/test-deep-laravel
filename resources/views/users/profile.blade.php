@@ -4,14 +4,53 @@
 
 @section('content')
     @php
-        $prefilledName = old('name', $registeredUser->name ?? data_get(auth()->user(), 'name'));
-        $prefilledEmail = old('email', $registeredUser->email ?? data_get(auth()->user(), 'email'));
+        $authUser = auth()->user();
+        $authEmail = (string) ($authUser?->email ?? '');
+        $authName = (string) ($authUser?->name ?? '');
+        $authNickname = (string) ($authUser?->nickname ?? '');
+        $authGivenName = (string) ($authUser?->given_name ?? '');
+        $authAvatarUrl = (string) ($authUser?->avatar_url ?? '');
+        $authPicture = (string) ($authUser?->picture ?? '');
+        $authNameLooksLikeEmail = $authName !== '' && filter_var($authName, FILTER_VALIDATE_EMAIL);
+        $authEmailFromName = $authNameLooksLikeEmail ? $authName : '';
+        $isLocalFallbackEmail = static fn (?string $value): bool => is_string($value)
+            && str_ends_with(strtolower($value), '@local.invalid');
+        $resolvedAuthEmail = (!$isLocalFallbackEmail($authEmail) && $authEmail !== '')
+            ? $authEmail
+            : ((!$isLocalFallbackEmail($authEmailFromName) && $authEmailFromName !== '') ? $authEmailFromName : '');
+        $oldEmail = (string) old('email', '');
+        $registeredEmail = (string) ($registeredUser->email ?? '');
+
+        if ($isLocalFallbackEmail($oldEmail) && $resolvedAuthEmail !== '') {
+            $oldEmail = '';
+        }
+
+        if ($isLocalFallbackEmail($registeredEmail) && $resolvedAuthEmail !== '') {
+            $registeredEmail = '';
+        }
+
+        $normalizedAuthName = $authNameLooksLikeEmail
+            ? ($authNickname !== '' ? $authNickname : $authGivenName)
+            : $authName;
+
+        $prefilledName = old('name',
+            ($registeredUser->name ?? null)
+            ?? ($normalizedAuthName !== '' ? $normalizedAuthName : null)
+            ?? ($resolvedAuthEmail !== '' ? explode('@', $resolvedAuthEmail)[0] : null)
+            ?? 'Usuario'
+        );
+
+        $prefilledEmail = $oldEmail !== ''
+            ? $oldEmail
+            : (($resolvedAuthEmail !== '' ? $resolvedAuthEmail : null)
+                ?? (!$isLocalFallbackEmail($registeredEmail) && $registeredEmail !== '' ? $registeredEmail : null)
+                ?? '');
 
         $hasKnownAvatar =
             (is_string($registeredUser->avatar_path ?? null) && $registeredUser->avatar_path !== '')
             || (is_string($registeredUser->avatar_url ?? null) && $registeredUser->avatar_url !== '')
-            || (is_string(data_get(auth()->user(), 'avatar_url')) && data_get(auth()->user(), 'avatar_url') !== '')
-            || (is_string(data_get(auth()->user(), 'picture')) && data_get(auth()->user(), 'picture') !== '');
+            || $authAvatarUrl !== ''
+            || $authPicture !== '';
 
         $currentAvatar = $hasKnownAvatar && Route::has('profile.avatar')
             ? route('profile.avatar')

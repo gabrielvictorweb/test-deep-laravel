@@ -2,7 +2,30 @@
 
 @php
     $isMobile = filter_var($mobile, FILTER_VALIDATE_BOOLEAN);
-    $userName = auth()->user()?->name ?? 'Usuario';
+    $authUser = auth()->user();
+    $authIdentifier = (string) ($authUser?->getAuthIdentifier() ?? '');
+    $authEmail = (string) ($authUser?->email ?? '');
+    $registeredUser = null;
+
+    if ($authIdentifier !== '') {
+        $registeredUser = \Domain\Models\User::query()
+            ->where('auth_identifier', $authIdentifier)
+            ->first();
+    }
+
+    if ($registeredUser === null && $authEmail !== '') {
+        $registeredUser = \Domain\Models\User::query()
+            ->where('email', $authEmail)
+            ->first();
+    }
+
+    $userName = (string) (
+        $registeredUser?->name
+        ?? $authUser?->name
+        ?? $authUser?->nickname
+        ?? $authUser?->given_name
+        ?? 'Usuario'
+    );
     $avatarFallback = strtoupper(substr((string) $userName, 0, 1));
     $currentAvatar = Route::has('profile.avatar') ? route('profile.avatar') : null;
 @endphp

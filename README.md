@@ -188,7 +188,6 @@ Observacao:
 Públicas:
 
 - `GET /`
-- `GET/POST /usuarios/cadastro`
 
 Autenticadas:
 
