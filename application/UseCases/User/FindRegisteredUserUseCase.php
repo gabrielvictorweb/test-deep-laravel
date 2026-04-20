@@ -19,7 +19,7 @@ class FindRegisteredUserUseCase
         $nicknameClaim = (string) ($authenticatedUser?->nickname ?? '');
         $givenNameClaim = (string) ($authenticatedUser?->given_name ?? '');
         $emailClaim = (string) ($authenticatedUser?->email ?? '');
-        $pictureClaim = $authenticatedUser?->picture;
+        $pictureClaim = isset($authenticatedUser?->picture) ? $authenticatedUser?->picture : null;
         $emailFromName = $nameClaim !== '' && filter_var($nameClaim, FILTER_VALIDATE_EMAIL) ? $nameClaim : '';
         $isLocalFallbackEmail = static fn (string $value): bool => str_ends_with(strtolower($value), '@local.invalid');
 
@@ -31,7 +31,7 @@ class FindRegisteredUserUseCase
             $byAuthIdentifier = $userRepository->findByAuthIdentifier($authIdentifier);
 
             if ($byAuthIdentifier !== null) {
-                if ($email !== '' && $byAuthIdentifier->email !== $email) {
+                if ($createWhenMissing && $email !== '' && $byAuthIdentifier->email !== $email) {
                     $userWithAuthEmail = $userRepository->findByEmail($email);
 
                     if ($userWithAuthEmail === null || $userWithAuthEmail->id === $byAuthIdentifier->id) {
